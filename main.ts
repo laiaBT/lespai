@@ -19,18 +19,20 @@ controller.A.onEvent(ControllerButtonEvent.Pressed, function () {
         `, mySprite, 0, -50)
     music.pewPew.play()
 })
-sprites.onOverlap(SpriteKind.Enemy, SpriteKind.Player, function (sprite, otherSprite) {
-    otherSprite.destroy()
-    mySprite.destroy()
+sprites.onOverlap(SpriteKind.Projectile, SpriteKind.Enemy, function (sprite, otherSprite) {
+    ASTEROIDE.destroy()
+    otherSprite.destroy(effects.confetti, 500)
+    info.changeScoreBy(1)
 })
 sprites.onOverlap(SpriteKind.Player, SpriteKind.Enemy, function (sprite, otherSprite) {
+    info.changeLifeBy(-1)
     otherSprite.destroy(effects.fire, 500)
     scene.cameraShake(4, 500)
-    info.changeLifeBy(-1)
 })
 let ASTEROIDE: Sprite = null
 let projectile: Sprite = null
 let mySprite: Sprite = null
+game.splash("BENVINGUTS A L'ESPAI", "Apreta A per començar i B per diparar")
 effects.starField.startScreenEffect()
 mySprite = sprites.create(img`
     . . . . . . . c d . . . . . . . 
@@ -53,6 +55,7 @@ mySprite = sprites.create(img`
 mySprite.setPosition(77, 32)
 controller.moveSprite(mySprite, 100, 100)
 mySprite.setStayInScreen(true)
+info.setLife(5)
 game.onUpdateInterval(1000, function () {
     ASTEROIDE = sprites.createProjectileFromSide(img`
         . . . . . . . . . c c 8 . . . . 
